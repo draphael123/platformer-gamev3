@@ -1,3 +1,6 @@
+import Phaser from 'phaser';
+import config from './config.js';
+
 function hideLoader() {
   const el = document.getElementById('load-status');
   if (el) el.style.display = 'none';
@@ -19,19 +22,15 @@ window.addEventListener('unhandledrejection', function (e) {
   showError('Error: ' + (e.reason?.message || String(e.reason)));
 });
 
-(async function () {
-  try {
-    const Phaser = (await import('phaser')).default;
-    const { default: config } = await import('./config.js');
-    hideLoader();
-    const game = new Phaser.Game(config);
-    game.events.once('ready', function () {
-      const canvas = document.querySelector('#game-container canvas');
-      if (!canvas || canvas.width === 0 || canvas.height === 0) {
-        showError('Canvas did not start. Try a different browser or disable hardware acceleration.');
-      }
-    });
-  } catch (e) {
-    showError('Failed to load game: ' + (e.message || String(e)));
-  }
-})();
+try {
+  hideLoader();
+  const game = new Phaser.Game(config);
+  game.events.once('ready', function () {
+    const canvas = document.querySelector('#game-container canvas');
+    if (!canvas || canvas.width === 0 || canvas.height === 0) {
+      showError('Canvas did not start. Try a different browser or disable hardware acceleration.');
+    }
+  });
+} catch (e) {
+  showError('Failed to load game: ' + (e.message || String(e)));
+}
