@@ -8,6 +8,8 @@ const config = {
   parent: 'game-container',
   pixelArt: false,
   backgroundColor: '#1a1a2e',
+  render: { antialias: true, roundPixels: false },
+  failIfMajorPerformanceCaveat: false,
   physics: {
     default: 'arcade',
     arcade: {
