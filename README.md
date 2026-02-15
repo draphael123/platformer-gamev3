@@ -6,10 +6,10 @@ A 2D platformer built with **Phaser.js** and modular JavaScript, replicating the
 
 ```bash
 npm install
-npm start
+npm run dev
 ```
 
-Open **http://localhost:3000** in your browser.
+Open **http://localhost:5173** in your browser. For a production-style build: `npm run build` then `npm run preview`.
 
 ## Controls
 
@@ -48,6 +48,17 @@ Edit **`src/physics/PlayerPhysics.js`** to adjust:
 - **Gray** – Ground
 
 Replace these in `GameScene.create()` and your asset pipeline when adding real art.
+
+## Deploy (GitHub + Vercel)
+
+1. **GitHub**: Code is pushed to [github.com/draphael123/platformer-gamev3](https://github.com/draphael123/platformer-gamev3).
+2. **Vercel**:
+   - Go to [vercel.com](https://vercel.com) and sign in (with GitHub).
+   - Click **Add New… → Project**, import **platformer-gamev3**.
+   - Leave **Build Command** as `npm run build` and **Output Directory** as `dist` (set in `vercel.json`).
+   - Click **Deploy**. Your game will be live at `https://platformer-gamev3-*.vercel.app` (or your custom domain).
+
+Later: push to `main` and Vercel will auto-deploy.
 
 ## Project structure
 
