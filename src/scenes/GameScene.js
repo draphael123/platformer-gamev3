@@ -910,7 +910,6 @@ export default class GameScene extends Phaser.Scene {
       this.waterBreathRemaining = Math.min(WATER_BREATH_SECONDS, this.waterBreathRemaining + delta / 500);
     }
 
-    const timeLeft = this.getTime();
     if (timeLeft > 0 && timeLeft <= LOW_TIME_WARNING_SECONDS) {
       const sec = Math.floor(timeLeft);
       if (sec !== this.lowTimeLastSec) {
