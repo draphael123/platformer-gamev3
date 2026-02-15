@@ -1,5 +1,9 @@
 import Phaser from 'phaser';
 import config from './config.js';
+import BootScene from './scenes/BootScene.js';
+import MenuScene from './scenes/MenuScene.js';
+import WorldMapScene from './scenes/WorldMapScene.js';
+import ControlsScene from './scenes/ControlsScene.js';
 import GameScene from './scenes/GameScene.js';
 
 function hideLoader() {
@@ -34,7 +38,12 @@ try {
   var game = new Phaser.Game(config);
   game.events.once('ready', function () {
     try {
-      game.scene.add('GameScene', GameScene, true);
+      game.scene.add('BootScene', BootScene, false);
+      game.scene.add('MenuScene', MenuScene, false);
+      game.scene.add('WorldMapScene', WorldMapScene, false);
+      game.scene.add('ControlsScene', ControlsScene, false);
+      game.scene.add('GameScene', GameScene, false);
+      game.scene.start('BootScene');
     } catch (sceneErr) {
       showError('Scene add failed: ' + (sceneErr.message || sceneErr), sceneErr.stack);
       return;

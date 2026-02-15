@@ -1,6 +1,6 @@
 {
   "name": "platformer-v3",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "New Super Mario Bros-style 2D platformer with Phaser.js",
   "type": "module",
   "main": "src/main.js",

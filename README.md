@@ -19,6 +19,9 @@ Open **http://localhost:5173** in your browser. For a production-style build: `n
 | **Shift** | Sprint (longer jump arc) |
 | **Space** | Jump |
 | **S** or **Down** (in air) | Ground pound |
+| **S** or **Down** (on ground) | Duck / crawl |
+| **ESC** | Pause menu |
+| **Gamepad** | Left stick move, A jump, trigger sprint, stick down = duck/pound |
 
 ## Mechanics
 
@@ -26,6 +29,12 @@ Open **http://localhost:5173** in your browser. For a production-style build: `n
 - **Ground pound**: Press Down while in the air to stall, then slam down. Camera shakes on landing.
 - **Triple jump**: Perform three jumps in a row (land briefly between each) within the combo window for a higher third jump with a flip.
 - **Sprint**: Hold Shift while moving for higher top speed and longer jump distance.
+- **Duck**: Hold Down on ground to duck (no movement).
+- **Stomp**: Jump on enemies to kill them and bounce; touching them otherwise costs a life.
+- **Lives**: 3 lives per run; fall in pit or touch enemy to lose one. Respawn at last checkpoint. Game over returns to menu.
+- **Timer**: 300 seconds per level; time left at flag = bonus points. Running out kills you.
+- **Combo**: Collect coins in quick succession for a score multiplier.
+- **High score & best time**: Saved in browser (localStorage). Options: reduced motion, fullscreen.
 
 ## Tuning physics
 
@@ -46,8 +55,15 @@ Edit **`src/physics/PlayerPhysics.js`** to adjust:
 - **Green** – Pipes and flagpole
 - **Brown** – Blocks / platforms
 - **Gray** – Ground
+- **Dark red** – Enemies (stomp to kill)
 
 Replace these in `GameScene.create()` and your asset pipeline when adding real art.
+
+## Scenes
+
+- **BootScene** → **MenuScene** (title, Level 1/2, Options, Controls, Fullscreen, high score).
+- **GameScene** – Play level: lives, timer, checkpoints, enemies, flagpole slide, pause (Resume / Restart / Quit).
+- **ControlsScene** – Overlay listing all controls.
 
 ## Deploy (GitHub + Vercel)
 
@@ -64,12 +80,21 @@ Later: push to `main` and Vercel will auto-deploy.
 
 ```
 src/
-  main.js           – Entry point
+  main.js           – Entry point, scene registration
   config.js         – Phaser config
+  constants.js      – EVENTS, DEPTH, DEFAULT_LIVES, LEVEL_TIME_LIMIT, SAVE_KEY
   physics/
     PlayerPhysics.js – Tunable movement constants
   entities/
-    Player.js       – Player class (movement, states, squash/stretch)
+    Player.js       – Player (movement, duck, squash/stretch)
+    Enemy.js        – Walker enemy (stomp to kill)
+  services/
+    EventBus.js     – Global event emitter
+    SaveManager.js  – localStorage save/load (high score, best time, options)
+    AudioManager.js – SFX/music hook (reduced motion)
   scenes/
-    GameScene.js    – Level, UI, coins, pipes, flagpole, camera
+    BootScene.js    – Load, then MenuScene
+    MenuScene.js    – Title, Level 1/2, Options, Controls, Fullscreen
+    ControlsScene.js – Controls overlay
+    GameScene.js    – Level play (lives, timer, checkpoints, enemies, pause)
 ```

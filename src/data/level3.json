@@ -1,0 +1,44 @@
+{
+  "worldWidth": 1800,
+  "worldHeight": 480,
+  "groundY": 448,
+  "playerStart": { "x": 80, "y": 432 },
+  "flag": { "x": 1720, "y": 348 },
+  "ground": { "tileWidth": 32, "from": 0, "to": 58 },
+  "platforms": [
+    { "x": 240, "y": 368, "width": 96, "height": 32 },
+    { "x": 480, "y": 320, "width": 128, "height": 32 },
+    { "x": 720, "y": 368, "width": 96, "height": 32 },
+    { "x": 1000, "y": 300, "width": 160, "height": 32 },
+    { "x": 1300, "y": 368, "width": 96, "height": 32 }
+  ],
+  "pipes": [
+    { "x": 180, "y": 384, "warp": { "x": 800, "y": 432 } },
+    { "x": 750, "y": 384 },
+    { "x": 1200, "y": 384, "warp": { "x": 1500, "y": 432 } }
+  ],
+  "coins": [[100,368],[200,328],[350,368],[520,280],[650,368],[800,368],[950,280],[1100,300],[1250,328],[1400,368]],
+  "enemies": [
+    { "x": 300, "y": 432, "speed": 50 },
+    { "x": 600, "y": 432, "speed": 55 },
+    { "x": 850, "y": 432, "type": "bouncing", "speed": 45, "bounceVelocity": -260 },
+    { "x": 1050, "y": 260, "type": "flying", "speed": 35, "amplitude": 50 },
+    { "x": 1350, "y": 432, "speed": 55 }
+  ],
+  "hazards": [
+    { "x": 950, "y": 340, "width": 24, "height": 24, "moveY": 50, "duration": 1800 }
+  ],
+  "waterZones": [{ "x": 1550, "y": 400, "width": 180, "height": 80 }],
+  "mushrooms": [[400, 400]],
+  "stars": [[900, 350]],
+  "movingPlatforms": [
+    { "x": 380, "y": 380, "width": 80, "height": 16, "moveY": -50, "duration": 2500 },
+    { "x": 1150, "y": 350, "width": 96, "height": 16, "moveX": 80, "duration": 3000 }
+  ],
+  "bricks": [[440, 368], [472, 368], [680, 368]],
+  "questionBlocks": [
+    { "x": 560, "y": 368, "content": "coin" },
+    { "x": 1020, "y": 368, "content": "fire" },
+    { "x": 1280, "y": 368, "content": "1up" }
+  ]
+}

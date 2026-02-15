@@ -49,6 +49,16 @@ export const PlayerPhysics = {
   stretchJumpScaleX: 0.85,
   stretchJumpScaleY: 1.2,
   squashStretchDuration: 120, // ms to animate back to 1,1
+
+  // --- Water / Swim ---
+  waterGravity: 200,
+  waterTerminalVelocity: 120,
+  swimUpVelocity: -200,
+
+  // --- Dash ---
+  dashSpeed: 450,
+  dashDuration: 0.15,
+  dashCooldown: 0.6,
 };
 
 export default PlayerPhysics;

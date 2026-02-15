@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { PlayerPhysics as P } from '../physics/PlayerPhysics.js';
+import AudioManager from '../services/AudioManager.js';
 
 /** Player states for movement logic */
 const State = {
@@ -37,6 +38,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.touchingWall = false;
     this.wallSide = 0; // -1 left, 1 right
     this.sprintHeld = false;
+    this.ducking = false;
 
     // Jump combo for triple jump (three consecutive ground jumps within window)
     this.jumpCount = 0;
@@ -59,6 +61,13 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
     // Flip animation for triple jump (rotation)
     this.tripleJumpRotation = 0;
+
+    this.inWater = false;
+    this.dashCooldownUntil = 0;
+    this.dashUntil = 0;
+    this.big = false;
+    this.invincibleUntil = 0;
+    this.firePower = false;
   }
 
   /** Called from scene update. */
@@ -75,6 +84,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       return;
     }
 
+    this._updateDash(keys, time, dt);
     this._updateWallSlide();
     this._updateHorizontalInput(keys, dt);
     this._updateJump(keys, time, dt);
@@ -82,6 +92,11 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this._clampVelocity();
     this._updateFacing();
     this._updateState();
+    if (this.invincibleUntil > this.scene.time.now) {
+      this.alpha = (this.scene.time.now % 160 < 80) ? 1 : 0.45;
+    } else {
+      this.alpha = 1;
+    }
   }
 
   _updateOnGround() {
@@ -100,6 +115,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   _updateCoyoteAndBuffer(keys, dt) {
     if (keys.down && keys.down.isDown && !this.onGround && !this.groundPoundActive)
       this._startGroundPound();
+    if (this.ducking) return;
     if (keys.jump && keys.jump.isDown) this.jumpBufferTimer = P.jumpBufferTime;
     this.jumpBufferTimer = Math.max(0, this.jumpBufferTimer - dt);
   }
@@ -154,6 +170,13 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
   _updateHorizontalInput(keys, dt) {
     if (this.groundPoundActive || this.state === State.LEVEL_CLEAR) return;
+    const t = this.scene.time.now / 1000;
+    if (this.dashUntil > t) return;
+    this.ducking = this.onGround && keys.down && keys.down.isDown;
+    if (this.ducking) {
+      this.setVelocityX(this.body.velocity.x * 0.9);
+      return;
+    }
     const left = keys.left && keys.left.isDown;
     const right = keys.right && keys.right.isDown;
     this.sprintHeld = keys.sprint && keys.sprint.isDown;
@@ -192,6 +215,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       return;
     }
 
+    if (this.ducking) return;
     if (tryJump && canJump && this.wallJumpLockUntil <= time) {
       const now = time / 1000;
       const comboElapsed = now - this.lastJumpTime;
@@ -215,6 +239,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   _doWallJump() {
+    AudioManager.playJump();
     this.wallJumpLockUntil = this.scene.time.now + P.wallJumpLockHorizontalTime * 1000;
     const dir = -this.wallSide;
     this.setVelocity(dir * P.wallJumpHorizontalVelocity, P.wallJumpVerticalVelocity);
@@ -227,6 +252,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   _doNormalJump() {
+    AudioManager.playJump();
     this.setVelocityY(P.jumpVelocity);
     this.jumpCount++;
     this.lastJumpTime = this.scene.time.now / 1000;
@@ -236,6 +262,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   _doTripleJump() {
+    AudioManager.playJump();
     const vx = this.body.velocity.x;
     this.setVelocity(
       vx * P.tripleJumpHorizontalBoost,
@@ -254,18 +281,38 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     if (this.groundPoundStallTimer > 0) return;
     this.body.setAllowGravity(true);
     let vy = this.body.velocity.y;
-    const g = (this.state === State.WALL_SLIDE && this.body.velocity.y >= 0)
-      ? P.gravity * 0.2
-      : P.gravity;
-    vy += g * dt;
-    if (vy > P.terminalVelocity) vy = P.terminalVelocity;
+    if (this.inWater) {
+      const g = P.waterGravity;
+      vy += g * dt;
+      if (vy > P.waterTerminalVelocity) vy = P.waterTerminalVelocity;
+      if (this.keys.jump && this.keys.jump.isDown) vy = Math.min(vy, P.swimUpVelocity);
+    } else {
+      const g = (this.state === State.WALL_SLIDE && this.body.velocity.y >= 0)
+        ? P.gravity * 0.2
+        : P.gravity;
+      vy += g * dt;
+      if (vy > P.terminalVelocity) vy = P.terminalVelocity;
+    }
     this.setVelocityY(vy);
+  }
+
+  _updateDash(keys, time, dt) {
+    const t = time / 1000;
+    if (this.dashUntil > t) return;
+    if (this.dashUntil > 0 && this.dashUntil <= t) this.dashUntil = 0;
+    if (this.dashCooldownUntil > t || !keys.dash || !keys.dash.isDown) return;
+    if (this.groundPoundActive || this.state === State.LEVEL_CLEAR) return;
+    this.dashCooldownUntil = t + P.dashCooldown;
+    this.dashUntil = t + P.dashDuration;
+    const dir = this.facingRight ? 1 : -1;
+    this.setVelocityX(dir * P.dashSpeed);
   }
 
   _clampVelocity() {
     if (this.groundPoundActive) return;
     const v = this.body.velocity;
-    if (v.y > P.terminalVelocity) this.setVelocityY(P.terminalVelocity);
+    const maxY = this.inWater ? P.waterTerminalVelocity : P.terminalVelocity;
+    if (v.y > maxY) this.setVelocityY(maxY);
   }
 
   _updateFacing() {

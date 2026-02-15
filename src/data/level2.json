@@ -1,0 +1,35 @@
+{
+  "worldWidth": 1600,
+  "worldHeight": 480,
+  "groundY": 448,
+  "playerStart": { "x": 80, "y": 432 },
+  "flag": { "x": 1520, "y": 348 },
+  "ground": { "tileWidth": 32, "from": 0, "to": 52 },
+  "platforms": [
+    { "x": 280, "y": 368, "width": 96, "height": 32 },
+    { "x": 520, "y": 320, "width": 128, "height": 32 },
+    { "x": 800, "y": 368, "width": 96, "height": 32 },
+    { "x": 272, "y": 368, "width": 32, "height": 176, "vertical": true },
+    { "x": 376, "y": 368, "width": 32, "height": 176, "vertical": true },
+    { "x": 552, "y": 320, "width": 32, "height": 256, "vertical": true },
+    { "x": 656, "y": 320, "width": 32, "height": 256, "vertical": true }
+  ],
+  "pipes": [
+    { "x": 180, "y": 384, "warp": { "x": 700, "y": 432 } },
+    { "x": 450, "y": 384, "warp": { "bonus": true } },
+    { "x": 700, "y": 384, "warp": { "x": 1100, "y": 432 } },
+    { "x": 1100, "y": 384 }
+  ],
+  "coins": [
+    [120, 368], [220, 328], [350, 368], [580, 280], [620, 280], [750, 368], [850, 368], [1050, 328], [1250, 368]
+  ],
+  "enemies": [
+    { "x": 320, "y": 432, "speed": 45 },
+    { "x": 600, "y": 432, "speed": 50 },
+    { "x": 950, "y": 432, "speed": 45 },
+    { "x": 1200, "y": 432, "speed": 50 }
+  ],
+  "waterZones": [
+    { "x": 1300, "y": 400, "width": 120, "height": 80 }
+  ]
+}
