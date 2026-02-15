@@ -17,6 +17,7 @@ const config = {
       debug: false,
     },
   },
+  // Must be an array of Scene *classes* (constructors), not { key, scene } objects
   scene: [GameScene],
   scale: {
     mode: Phaser.Scale.FIT,
