@@ -1,8 +1,8 @@
 import Phaser from 'phaser';
-import GameScene from './scenes/GameScene.js';
 
+// No scene in config — we add it at runtime in main.js to avoid boot-time scene array handling
 const config = {
-  type: Phaser.AUTO,
+  type: Phaser.CANVAS,
   width: 800,
   height: 480,
   parent: 'game-container',
@@ -17,8 +17,7 @@ const config = {
       debug: false,
     },
   },
-  // Must be an array of Scene *classes* (constructors), not { key, scene } objects
-  scene: [GameScene],
+  scene: [],
   scale: {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
