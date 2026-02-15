@@ -1,7 +1,9 @@
 import Phaser from 'phaser';
 
 const emitter = new Phaser.Events.EventEmitter();
-emitter.setMaxListeners(20);
+if (typeof emitter.setMaxListeners === 'function') {
+  emitter.setMaxListeners(20);
+}
 
 export function on(event, fn, context) {
   emitter.on(event, fn, context);

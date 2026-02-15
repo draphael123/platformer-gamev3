@@ -33,8 +33,15 @@ window.addEventListener('unhandledrejection', function (e) {
   showError('Error: ' + msg, detail);
 });
 
+// If still loading after this long, show a hint (script may have failed to run)
+setTimeout(function () {
+  var status = document.getElementById('load-status');
+  if (status && status.style.display !== 'none') {
+    status.innerHTML = 'Loading failed. Open the browser console (F12) for errors.';
+  }
+}, 10000);
+
 try {
-  hideLoader();
   var game = new Phaser.Game(config);
   game.events.once('ready', function () {
     try {
@@ -44,6 +51,7 @@ try {
       game.scene.add('ControlsScene', ControlsScene, false);
       game.scene.add('GameScene', GameScene, false);
       game.scene.start('BootScene');
+      hideLoader();
     } catch (sceneErr) {
       showError('Scene add failed: ' + (sceneErr.message || sceneErr), sceneErr.stack);
       return;
