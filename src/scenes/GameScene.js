@@ -38,22 +38,20 @@ export default class GameScene extends Phaser.Scene {
     this.physics.world.setBounds(0, 0, worldWidth, worldHeight);
     this.cameras.main.setBounds(0, 0, worldWidth, worldHeight);
 
-    // --- Ground and platforms ---
-    this.ground = this.physics.add.staticGroup();
+    // --- Ground and platforms (plain group + existing bodies to avoid physics group callback bug) ---
+    this.ground = this.add.group();
     const groundY = worldHeight - 32;
     for (let x = 0; x < worldWidth + 64; x += 32) {
       const b = this.add.image(x, groundY + 16, 'ground_placeholder').setOrigin(0.5, 0.5);
       this.physics.add.existing(b, true);
       this.ground.add(b);
     }
-    // Raised platform
     const platformY = groundY - 80;
     for (let x = 320; x < 480; x += 32) {
       const b = this.add.image(x, platformY + 16, 'block_placeholder').setOrigin(0.5, 0.5);
       this.physics.add.existing(b, true);
       this.ground.add(b);
     }
-    // Wall-jump walls
     for (let y = platformY; y <= groundY; y += 32) {
       const b = this.add.image(312, y + 16, 'block_placeholder').setOrigin(0.5, 0.5);
       this.physics.add.existing(b, true);
@@ -78,8 +76,8 @@ export default class GameScene extends Phaser.Scene {
       this.pipes.add(pipe);
     });
 
-    // --- Coin bubbles (floating, rotating - yellow) ---
-    this.coins = this.physics.add.group();
+    // --- Coin bubbles (plain group to avoid physics group callback bug) ---
+    this.coins = this.add.group();
     const coinPositions = [
       { x: 150, y: groundY - 80 },
       { x: 250, y: groundY - 120 },

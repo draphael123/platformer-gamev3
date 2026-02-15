@@ -31,6 +31,11 @@ The error `Uncaught TypeError: a[i] is not a function` (minified) happens when P
 
 - Error box is scrollable (`max-height: 80vh`, `overflow-y: auto`), monospace, and left-aligned so long stack traces are readable.
 
+### 6. No physics groups (fix for createCallbackHandler)
+
+- **Change:** Replaced `this.physics.add.staticGroup()` and `this.physics.add.group()` with `this.add.group()`. We still call `this.physics.add.existing(child, true)` on each tile/coin, then `group.add(child)`.
+- **Why:** The stack trace showed the error in `createCallbackHandler` inside Phaser’s Arcade StaticGroup/Group. When children are added to a physics group, it calls an internal callback that was ending up as a non-function after minification. Using a plain Group and attaching physics to each child avoids that path; `physics.add.collider(player, ground)` / `overlap(player, coins)` still work with plain groups.
+
 ## If the error still appears
 
 1. Copy the **full error text and stack trace** from the red error box (or DevTools Console).
