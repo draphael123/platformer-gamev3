@@ -27,9 +27,9 @@ export default class GameScene extends Phaser.Scene {
     createPlaceholderTexture(this, 'flagpole_placeholder', 0x228822, 16, 200);
     createPlaceholderTexture(this, 'ground_placeholder', 0x444444, 32, 32);
 
-    // --- Gradient background ---
+    // --- Background (solid fill; gradient is WebGL-only and can break Canvas renderer) ---
     const bg = this.add.graphics();
-    bg.fillGradientStyle(0x87ceeb, 0x87ceeb, 0xe0f6ff, 0xe0f6ff, 1, 1, 1, 1);
+    bg.fillStyle(0x87ceeb, 1);
     bg.fillRect(0, 0, width * 2, height * 2);
 
     // --- World bounds (wider for level) ---
@@ -127,8 +127,8 @@ export default class GameScene extends Phaser.Scene {
       this.playerWasOnGround = this.player.body.blocked.down;
     });
     this.physics.add.collider(this.player, this.pipes);
-    this.physics.add.overlap(this.player, this.coins, this.collectCoin, null, this);
-    this.physics.add.overlap(this.player, flagZone, this.reachFlagpole, null, this);
+    this.physics.add.overlap(this.player, this.coins, (p, c) => this.collectCoin(p, c), null, this);
+    this.physics.add.overlap(this.player, flagZone, () => this.reachFlagpole(), null, this);
 
     // --- Camera follow ---
     this.cameras.main.startFollow(this.player, true, 0.08, 0.08);
@@ -140,7 +140,7 @@ export default class GameScene extends Phaser.Scene {
     this.createFloatingUI();
 
     // --- Events ---
-    this.events.on('ground-pound-land', this.onGroundPoundLand, this);
+    this.events.on('ground-pound-land', () => this.onGroundPoundLand(), this);
   }
 
   createFloatingUI() {
@@ -154,7 +154,7 @@ export default class GameScene extends Phaser.Scene {
     const panelY = 20;
 
     const bg = this.add.graphics();
-    bg.fillGradientStyle(0x2d2d44, 0x2d2d44, 0x1a1a2e, 0x1a1a2e, 0.85, 0.85, 0.85, 0.85);
+    bg.fillStyle(0x2d2d44, 0.9);
     bg.fillRoundedRect(panelX, panelY, panelWidth, panelHeight, 12);
     bg.lineStyle(2, 0xffffff, 0.3);
     bg.strokeRoundedRect(panelX, panelY, panelWidth, panelHeight, 12);
