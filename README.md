@@ -55,7 +55,7 @@ Replace these in `GameScene.create()` and your asset pipeline when adding real a
 2. **Vercel**:
    - Go to [vercel.com](https://vercel.com) and sign in (with GitHub).
    - Click **Add New… → Project**, import **platformer-gamev3**.
-   - Leave **Build Command** as `npm run build` and **Output Directory** as `dist` (set in `vercel.json`).
+   - Leave **Build Command** as `npm run build` and **Output Directory** as `dist` (required; set in `vercel.json`). If the live site is blank, confirm in Project Settings → General that **Output Directory** is exactly `dist`.
    - Click **Deploy**. Your game will be live at `https://platformer-gamev3-*.vercel.app` (or your custom domain).
 
 Later: push to `main` and Vercel will auto-deploy.
